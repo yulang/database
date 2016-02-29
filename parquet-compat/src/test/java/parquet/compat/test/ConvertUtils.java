@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.junit.Test;
 
 import parquet.Log;
 import parquet.Preconditions;
@@ -193,5 +194,15 @@ public class ConvertUtils {
       Utils.closeQuietly(w);
     }
   }
+  
+  @Test
+  public void test() throws IOException {
+	  System.out.println("Convert.");
+	  File csv = new File("/tmp/test.csv");
+	  File parquet = new File("/tmp/test.par");
+	  ConvertUtils.convertCsvToParquet(csv, parquet);
+  }
+
+
 
 }
