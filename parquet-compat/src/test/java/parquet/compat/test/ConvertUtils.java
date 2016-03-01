@@ -98,7 +98,12 @@ public class ConvertUtils {
     try {
       while ((line = br.readLine()) != null) {
         String[] fields = line.split(Pattern.quote(CSV_DELIMITER));
-        writer.write(Arrays.asList(fields));
+        String[] compactFields = new String[fields.length];
+        for (int i = 0; i < fields.length; ++i) {
+        	compactFields[i] = compactString(fields[i]);
+        }
+        //writer.write(Arrays.asList(fields));
+        writer.write(Arrays.asList(compactFields));
         ++lineNumber;
       }
 
@@ -197,10 +202,54 @@ public class ConvertUtils {
   
   @Test
   public void test() throws IOException {
-	  System.out.println("Convert.");
+	  //String rst = "AAA";
+	  
+	  //System.out.println(compactString(rst).length());
 	  File csv = new File("/tmp/test.csv");
-	  File parquet = new File("/tmp/test.par");
+	  File parquet = new File("/tmp/com.par");
 	  ConvertUtils.convertCsvToParquet(csv, parquet);
+  }
+  
+  private static String compactString(String inString) {
+	  String rst = "";
+	  int counter = 0;
+	  byte tmp = 0x00;
+	  for (char c : inString.toCharArray()) {
+		  String buf = "";
+		  if (counter == 4) {
+			  rst += (char) tmp;
+			  //System.out.println("hi");
+			  counter = 0;
+			  tmp = 0x00;
+		  }
+		  switch (c) {
+		  	case 'A':
+		  		tmp = (byte) ((tmp << 2) + 0x00);
+		  		counter++;
+		  		break;
+		  	case 'C':
+		  		tmp = (byte) ((tmp << 2) + 0x01);
+		  		counter++;
+		  		break;
+		  	case 'T':
+		  		tmp = (byte) ((tmp << 2) + 0x02);
+		  		counter++;
+		  		break;
+		  	case 'G':
+		  		tmp = (byte) ((tmp << 2) + 0x03);
+		  		counter++;
+		  		break;
+		  	default:
+		  		System.out.println("Unknown character: " + c);
+		  		break;
+		}
+	  }
+	  
+	  if (counter != 0) {
+		//System.out.println("counter is " + counter);
+		rst += (char) (tmp << (2 * (4 - counter)));
+	  }
+	  return rst;
   }
 
 
