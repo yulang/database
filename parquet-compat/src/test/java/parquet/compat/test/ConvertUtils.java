@@ -100,7 +100,10 @@ public class ConvertUtils {
         String[] fields = line.split(Pattern.quote(CSV_DELIMITER));
         String[] compactFields = new String[fields.length];
         for (int i = 0; i < fields.length; ++i) {
-        	compactFields[i] = compactString(fields[i]);
+		if(i == 1)
+        		compactFields[i] = compactString(fields[i]);
+		else
+			compactFields[i] = fields[i];
         }
         //writer.write(Arrays.asList(fields));
         writer.write(Arrays.asList(compactFields));
@@ -205,7 +208,7 @@ public class ConvertUtils {
 	  //String rst = "AAA";
 	  
 	  //System.out.println(compactString(rst).length());
-	  File csv = new File("/tmp/test.csv");
+	  File csv = new File("/home/langyu/project/test/util/ref.csv");
 	  File parquet = new File("/tmp/com.par");
 	  ConvertUtils.convertCsvToParquet(csv, parquet);
   }
